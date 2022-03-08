@@ -1,0 +1,5 @@
+/home/miloz/Projects/SKYCOM/1.8.1/build/elf2uf2/CMakeFiles/rebuild_cache.dir
+/home/miloz/Projects/SKYCOM/1.8.1/build/elf2uf2/CMakeFiles/edit_cache.dir
+/home/miloz/Projects/SKYCOM/1.8.1/build/elf2uf2/CMakeFiles/elf2uf2.dir
+/home/miloz/Projects/SKYCOM/1.8.1/build/elf2uf2/boot_uf2_headers/CMakeFiles/rebuild_cache.dir
+/home/miloz/Projects/SKYCOM/1.8.1/build/elf2uf2/boot_uf2_headers/CMakeFiles/edit_cache.dir

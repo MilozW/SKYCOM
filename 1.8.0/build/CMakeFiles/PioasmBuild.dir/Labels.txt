@@ -1,0 +1,13 @@
+# Target labels
+ PioasmBuild
+# Source files and their labels
+/home/miloz/Projects/SKYCOM/1.8.0/build/CMakeFiles/PioasmBuild
+/home/miloz/Projects/SKYCOM/1.8.0/build/CMakeFiles/PioasmBuild.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/CMakeFiles/PioasmBuild-complete.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-install.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-mkdir.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-download.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-update.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-patch.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-configure.rule
+/home/miloz/Projects/SKYCOM/1.8.0/build/pioasm/src/PioasmBuild-stamp/PioasmBuild-build.rule
