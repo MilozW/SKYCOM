@@ -2,26 +2,39 @@
 #include "stdint.h"
 #include "stdbool.h"
 
-uint16_t buff[20] = { 0 };
-uint8_t BuffIndex = 0;
-int8_t BuffValIndex = 16;
+#include "SKYCOM.h"
+#include "buffer.h"
 
-void VAL_BUFF(uint32_t val, uint8_t size){
-  uint16_t valN = 0;
+void printb(uint32_t val){
 
-  if((BuffValIndex - size) < 0){
+	uint32_t bin = 1;
 
-    buff[BuffIndex] = buff[BuffIndex] | (val >> size - BuffValIndex);
+	 uint8_t size = Get_Val_Size(val);
+	//uint8_t size = 2;
 
-    valN = val << 16 - (size - BuffValIndex);
-    BuffValIndex = 16 - (size - BuffValIndex);
+	bool buff[size * 8];
 
-    BuffIndex++;
-  } else{
-    valN = val << BuffValIndex - size;
-    BuffValIndex -= size;
-  }
+	for(int i = (size * 8) - 1; i > -1; i--){
+		if((val & bin) > 0)
+		buff[i] = 1;
+		else
+		buff[i] = 0;
+		bin *= 2;
+	}
 
-  buff[BuffIndex] = buff[BuffIndex] | valN;
+	for(int i = 0; i < size * 8; i++){
+		printf("%d", buff[i]);
+	}
+}
+
+
+int main(){
+
+  COM_Start(320, 9);
+  COM_Add_receiver(500);
+  COM_Add_receiver(865);
+  COM_Add_receiver(365);
+  COM_Remove_Receiver(865);
+  COM_Transmit(8);
 
 }
