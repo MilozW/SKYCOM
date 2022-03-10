@@ -1,6 +1,15 @@
 #include "SKYCOM.h"
 #include "buffer.h"
 
+#define ID_STRUCT              0
+#define ID_VERSION             1
+#define ID_TRANSMITTER         2
+#define ID_RECEIVER_SPECIFIC   3
+#define ID_RECEIVER_ALL        4
+#define ID_SYSTEM_MSG          5
+#define ID_DATA_MSG            6
+
+
 uint16_t DEV_ADDR;
 uint8_t  DEV_PROTV = 0;
 uint16_t RECEIVER_BUFF[16];
@@ -24,30 +33,33 @@ bool COM_Get_state(){
   return COM;
 }
 
-void COM_Transmit(uint8_t Struct){
+
+void Setup_Message(uint8_t Struct, uint8_t Msg_type){
   // ---setup instruction set---
   // -0   Struct
   // -1   Version
   // -2   Transmitter
-  // -3   Receiver
-  // -4   Message Type
-
+  // -3   Specific receiver
+  // -4   All receivers
+  // -5   System message
+  // -6   Data message
+  // -7
 
   if(COM == false)
     return;
 
   if(Struct != 0){
-    Val_to_buff(0, 3, SETUP_BUFF);
+    Val_to_buff(ID_STRUCT, 3, SETUP_BUFF);
     Val_to_buff(Struct, 8, SETUP_BUFF);
   }
 
   if(DEV_PROTV != 0){
-    Val_to_buff(1, 3, SETUP_BUFF);
+    Val_to_buff(ID_VERSION, 3, SETUP_BUFF);
     Val_to_buff(DEV_PROTV, 8, SETUP_BUFF);
   }
 
   //add transmitter instruction
-  Val_to_buff(2, 3, SETUP_BUFF);
+  Val_to_buff(ID_TRANSMITTER, 3, SETUP_BUFF);
   //add transmitter address
   Val_to_buff(DEV_ADDR, ADDR_SIZE, SETUP_BUFF);
 
@@ -55,18 +67,27 @@ void COM_Transmit(uint8_t Struct){
 
   for(int i = 0; i < 16; i++){
     if(RECEIVER_BUFF[i] != 0){
-      Val_to_buff(3, 3, SETUP_BUFF);
+      Val_to_buff(ID_RECEIVER_SPECIFIC, 3, SETUP_BUFF);
       Val_to_buff(RECEIVER_BUFF[i], ADDR_SIZE, SETUP_BUFF);
       receiver_count++;
     }
   }
 
-  if(receiver_count == 0);
-      Val_to_buff(4, 3, SETUP_BUFF);
+  printf("receivercount %d\n", receiver_count);
+
+  if(receiver_count == 0)
+      Val_to_buff(ID_RECEIVER_ALL, 3, SETUP_BUFF);
+
+  Val_to_buff(Msg_type, 3, SETUP_BUFF);
+
 
 
   PrintD(SETUP_BUFF);
   printf("\n");
+}
+
+void COM_Transmit(uint8_t Struct){
+  Setup_Message(Struct, ID_DATA_MSG);
 }
 
 void COM_Set_protocol_version(uint8_t protocol_version){
