@@ -1,6 +1,7 @@
 #include "SKYCOM.h"
 #include "buffer.h"
 
+//Protocol ID's
 #define ID_STRUCT              0
 #define ID_VERSION             1
 #define ID_TRANSMITTER         2
@@ -29,6 +30,7 @@ void COM_Stop(){
   COM = false;
 }
 
+//
 bool COM_Get_state(){
   return COM;
 }
