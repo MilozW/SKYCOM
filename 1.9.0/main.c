@@ -30,11 +30,11 @@ void printb(uint32_t val){
 
 int main(){
 
-  COM_Start(320, 9);
-  COM_Add_receiver(500);
-  COM_Add_receiver(865);
-  COM_Add_receiver(365);
-  COM_Remove_Receiver(865);
+  COM_Start(35, 9);
+  COM_Add_receiver(112);
+  COM_Add_receiver(234);
+  COM_Add_receiver(165);
+  COM_Remove_Receiver(112);
   COM_Transmit(8);
 
 }

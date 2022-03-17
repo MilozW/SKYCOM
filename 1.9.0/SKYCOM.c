@@ -39,7 +39,7 @@ bool COM_Get_state(){
 void Setup_Message(uint8_t Struct, uint8_t Msg_type){
   // ---setup instruction set---
   // -0   Struct
-  // -1   Version
+  // -1
   // -2   Transmitter
   // -3   Specific receiver
   // -4   All receivers
@@ -50,14 +50,11 @@ void Setup_Message(uint8_t Struct, uint8_t Msg_type){
   if(COM == false)
     return;
 
+  Val_to_buff(DEV_PROTV, 5, SETUP_BUFF);
+
   if(Struct != 0){
     Val_to_buff(ID_STRUCT, 3, SETUP_BUFF);
     Val_to_buff(Struct, 8, SETUP_BUFF);
-  }
-
-  if(DEV_PROTV != 0){
-    Val_to_buff(ID_VERSION, 3, SETUP_BUFF);
-    Val_to_buff(DEV_PROTV, 8, SETUP_BUFF);
   }
 
   //add transmitter instruction
