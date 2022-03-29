@@ -28,6 +28,8 @@ void COM_Set_protocol_version(uint8_t protocol_version);
 void COM_Transmit(uint8_t Struct);
 
 
+void COM_Add_Int(int32_t val);
+void COM_Add_Float(double val);
 
 
 void printb(uint32_t val);

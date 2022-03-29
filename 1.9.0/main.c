@@ -35,6 +35,9 @@ int main(){
   COM_Add_receiver(234);
   COM_Add_receiver(165);
   COM_Remove_Receiver(112);
+
+	COM_Add_Float(53.78);
+
   COM_Transmit(8);
 
 }

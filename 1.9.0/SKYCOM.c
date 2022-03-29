@@ -10,6 +10,10 @@
 #define ID_SYSTEM_MSG          5
 #define ID_DATA_MSG            6
 
+#define ID_INT    0
+#define ID_CHARS  1
+#define ID_FLOAT  2
+#define ID_CUSTOM 3
 
 uint16_t DEV_ADDR;
 uint8_t  DEV_PROTV = 0;
@@ -83,6 +87,13 @@ void Setup_Message(uint8_t Struct, uint8_t Msg_type){
 
   PrintD(SETUP_BUFF);
   printf("\n");
+  PrintD(DATA_BUFF);
+  printf("\n");
+
+  Merge_Buff();
+
+  PrintD(SETUP_BUFF);
+  printf("\n");
 }
 
 void COM_Transmit(uint8_t Struct){
@@ -132,4 +143,32 @@ bool COM_Remove_Receiver(uint16_t receiver){
 void COM_Clear_Receivers(){
   for(int i = 0; i < 16; i++)
     RECEIVER_BUFF[i] = 0;
+}
+
+
+
+
+void COM_Add_Int(int32_t val){
+  bool pol = true;
+
+  if(val < 0){
+    pol = false;
+    val *= -1;
+  }
+
+  Val_to_buff(ID_INT, 2, DATA_BUFF);
+  Val_to_buff(pol, 1, DATA_BUFF);
+  Val_to_buff((uint16_t)val, 16, DATA_BUFF);
+
+}
+
+void COM_Add_Float(double val){
+
+  while((double)val != (uint32_t)val)
+  val *= 10;
+
+  printf("val: %d\n", (uint32_t)val);
+
+  Val_to_buff(ID_FLOAT, 2, DATA_BUFF);
+  Val_to_buff((uint32_t)val, 16, DATA_BUFF);
 }

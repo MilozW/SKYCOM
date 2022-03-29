@@ -1,5 +1,5 @@
 #include "SKYCOM.h"
-
+#include "buffer.h"
 
 
 //data buffer variables and arrays
@@ -48,6 +48,12 @@ uint8_t Get_Val_Size(uint32_t val){
 	return size;
 }
 
+
+//merge two buffers
+void Merge_Buff(){
+  for(int i = 0; i < BUFF_ADDR[DATA_BUFF] + 1; i++)
+  Val_to_buff(BUFF[DATA_BUFF][i], 16, SETUP_BUFF);
+}
 
 void PrintD(bool buff){
   for(int i = 0; i < BUFF_ADDR[buff] + 1; i++){
