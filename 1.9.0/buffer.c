@@ -1,7 +1,6 @@
 #include "SKYCOM.h"
 #include "buffer.h"
 
-
 //data buffer variables and arrays
 uint16_t  BUFF[2][BUFF_SIZE] = { 0 };
 uint8_t   BUFF_ADDR[2] = { 0 };
@@ -12,7 +11,8 @@ uint16_t DEV_ADDR = 0;
 uint16_t RECEIVER_BUFF[16];
 
 //move a value to a data buffer
-void Val_to_buff(uint32_t val, uint8_t size, bool buff){
+void Val_to_buff(uint64_t val, uint8_t size, bool buff){
+  /*
   uint16_t valN = 0;
 
   //check if value fits in remaining space at the current value in buffer array
@@ -34,17 +34,39 @@ void Val_to_buff(uint32_t val, uint8_t size, bool buff){
   }
 
   BUFF[buff][BUFF_ADDR[buff]] = BUFF[buff][BUFF_ADDR[buff]] | valN;
+
+  */
+ 	uint64_t valN;
+	while(size > 0){
+		valN = val & (uint64_t)pow(2, size - 1);
+
+    int8_t shift = size - BUFF_INDEX[buff];
+		if(shift > 0)
+		valN = valN >> shift;
+		else
+		valN = valN << (shift*-1);
+
+
+		BUFF[buff][BUFF_ADDR[buff]] = BUFF[buff][BUFF_ADDR[buff]] | valN;
+		size -= 1;
+		if(BUFF_INDEX[buff] == 1){
+			BUFF_INDEX[buff] = 8;
+			BUFF_ADDR[buff]++;
+		} else
+		BUFF_INDEX[buff] -= 1;
+	}
 }
 
 //return the size of a value in bytes
-uint8_t Get_Val_Size(uint32_t val){
+uint8_t Get_Val_Size(uint64_t val){
 
-	uint64_t bits = 8;	//bits in byte, starting w/ one byte
+	uint8_t bits = 8;	//bits in byte, starting w/ one byte
 	uint8_t size = 1;	//stores byte count
 
 	while(pow(2, bits) < val)
-	bits *= 2, size++;
+	bits += 8, size++;
 
+  //printf("val:%lu, siz:%d, bit:%d\n", val, size, bits);
 	return size;
 }
 
@@ -59,4 +81,14 @@ void PrintD(bool buff){
   for(int i = 0; i < BUFF_ADDR[buff] + 1; i++){
     printb(BUFF[buff][i]);
   }
+}
+
+bool FoI(double val){
+  uint64_t  Ival = val;
+  double    Dval = val - Ival;
+
+  if(Dval == 0)
+  return true;
+  else
+  return false;  
 }

@@ -1,6 +1,5 @@
 #include "SKYCOM.h"
 #include "buffer.h"
-
 //Protocol ID's
 #define ID_STRUCT              0
 #define ID_VERSION             1
@@ -21,20 +20,41 @@ uint16_t RECEIVER_BUFF[16];
 
 //states
 bool COM = false;
-
-//initializes communication
+/**
+ * @brief start device and set basic parameters
+ * 
+ * @param Device_Address address of this device on the network
+ * @param protocol_version version of the protocol implementation on the users network
+ */
 void COM_Start(uint16_t Device_Address, uint8_t protocol_version){
   COM = true;
   DEV_ADDR = Device_Address;
   DEV_PROTV = protocol_version;
 }
 
-//stops communication
+/**
+ * @brief change protocol version from current
+ * 
+ * @param protocol_version protocol version
+ */
+void COM_Set_protocol_version(uint8_t protocol_version){
+  DEV_PROTV = protocol_version;
+}
+
+/**
+ * @brief disables communication interface
+ * 
+ */
 void COM_Stop(){
   COM = false;
 }
 
-//
+/**
+ * @brief get current communication interface state
+ * 
+ * @return true 
+ * @return false 
+ */
 bool COM_Get_state(){
   return COM;
 }
@@ -58,7 +78,7 @@ void Setup_Message(uint8_t Struct, uint8_t Msg_type){
 
   if(Struct != 0){
     Val_to_buff(ID_STRUCT, 3, SETUP_BUFF);
-    Val_to_buff(Struct, 8, SETUP_BUFF);
+    Val_to_buff(Struct, STRUCT_SIZ, SETUP_BUFF);
   }
 
   //add transmitter instruction
@@ -76,14 +96,10 @@ void Setup_Message(uint8_t Struct, uint8_t Msg_type){
     }
   }
 
-  printf("receivercount %d\n", receiver_count);
-
   if(receiver_count == 0)
-      Val_to_buff(ID_RECEIVER_ALL, 3, SETUP_BUFF);
+  Val_to_buff(ID_RECEIVER_ALL, 3, SETUP_BUFF);
 
   Val_to_buff(Msg_type, 3, SETUP_BUFF);
-
-
 
   PrintD(SETUP_BUFF);
   printf("\n");
@@ -96,15 +112,22 @@ void Setup_Message(uint8_t Struct, uint8_t Msg_type){
   printf("\n");
 }
 
+/**
+ * @brief transmit the transmit buffer
+ * 
+ * @param Struct predefined message value structure to be send along with message
+ */
 void COM_Transmit(uint8_t Struct){
   Setup_Message(Struct, ID_DATA_MSG);
 }
 
-void COM_Set_protocol_version(uint8_t protocol_version){
-  DEV_PROTV = protocol_version;
-}
-
-//adds receiver to receiver array, returns true if succesfully putin buffer or already present
+/**
+ * @brief add receiver to receiver buffer
+ * 
+ * @param receiver receiver ID
+ * @return true receiver added
+ * @return false buffer full
+ */
 bool COM_Add_receiver(uint16_t receiver){
 	bool state = false;
 
@@ -127,6 +150,13 @@ bool COM_Add_receiver(uint16_t receiver){
 }
 
 //search for the receiver to be removed and set this spot to zero
+/**
+ * @brief remove a receiver from the to be send message
+ * 
+ * @param receiver receiver ID
+ * @return true receiver ID found and removed
+ * @return false receiver ID does not exist
+ */
 bool COM_Remove_Receiver(uint16_t receiver){
 	bool state = false;
 
@@ -139,16 +169,44 @@ bool COM_Remove_Receiver(uint16_t receiver){
 	return state;
 }
 
-//clear receiver buffer
+/**
+ * @brief remove all receivers from receiver buffer
+ * 
+ */
 void COM_Clear_Receivers(){
   for(int i = 0; i < 16; i++)
     RECEIVER_BUFF[i] = 0;
 }
 
+/**
+ * @brief add an integer value to the transmit buffer
+ * 
+ * @param val integer to be added to transmit buffer
+ */
+void COM_Add_Int(int64_t val){
+  bool pol = true;
+
+  if(val < 0){
+    pol = false;
+    val *= -1;
+  }
+  
+  uint8_t siz = Get_Val_Size(val);
+
+  Val_to_buff(ID_INT, 2, DATA_BUFF);
+  Val_to_buff(pol, 1, DATA_BUFF);
+  Val_to_buff(siz, 4, DATA_BUFF);
+  Val_to_buff(val, 16, DATA_BUFF);
+
+}
 
 
-
-void COM_Add_Int(int32_t val){
+/**
+ * @brief add floating point value to transmit buffer
+ * 
+ * @param val double/ float to be added to transmit buffer
+ */
+void COM_Add_Float(double val){
   bool pol = true;
 
   if(val < 0){
@@ -156,19 +214,11 @@ void COM_Add_Int(int32_t val){
     val *= -1;
   }
 
-  Val_to_buff(ID_INT, 2, DATA_BUFF);
-  Val_to_buff(pol, 1, DATA_BUFF);
-  Val_to_buff((uint16_t)val, 16, DATA_BUFF);
+  uint64_t  Ival;
 
-}
+  memcpy(&Ival, &val, 8);
 
-void COM_Add_Float(double val){
-
-  while((double)val != (uint32_t)val)
-  val *= 10;
-
-  printf("val: %d\n", (uint32_t)val);
 
   Val_to_buff(ID_FLOAT, 2, DATA_BUFF);
-  Val_to_buff((uint32_t)val, 16, DATA_BUFF);
+  Val_to_buff(Ival, 64, DATA_BUFF);
 }
